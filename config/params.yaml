@@ -1,0 +1,25 @@
+remover:
+  load_dir: "/home/evanovic/Save_PCD/KITTI/"
+  result_dir: "/home/evanovic/Save_PCD/remover"
+
+  is_large: false
+
+  Transformation_LiDAR2IMU: [ 0.999068,   -0.038419,  0.019681, -0.020637,
+                              0.038307,   0.999248,   0.006046, -0.007273,
+                              -0.019899,  -0.005287,  0.999788, -0.025082,
+                              0.000000,   0.000000,   0.000000, 1.000000  ]
+
+  start_idx: 600
+  end_idx: 900
+
+  downsample_voxel_size: 0.1
+
+  FOV_V: 50.0
+  FOV_H: 120.0
+
+  resize_ratio: 1.5
+  
+  range_difference_ratio_threshold: 0.05
+
+  grid_size: 1
+  occupation_ratio: 0.2
