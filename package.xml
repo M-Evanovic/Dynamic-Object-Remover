@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0.0"?>
 <package>
   <name>remover</name>
-  <version>1.0</version>
+  <version>1.0.0</version>
   <description>remove dynamic object in 3D pointcloud map</description>
 
   <author>Evanovic</author>
