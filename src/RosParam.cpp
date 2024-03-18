@@ -8,7 +8,6 @@ RosParam::RosParam()
     nh.param<std::string>("remover/load_dir", load_dir, "/");
     scans_dir = load_dir + "Scans";
     poses_path = load_dir + "poses.csv";
-    cout << load_dir << endl << scans_dir << endl << poses_path << endl;
     nh.param<std::string>("remover/result_dir", result_dir, "/");
 
     nh.param<bool>("remover/is_large", is_large, false);
