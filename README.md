@@ -1,5 +1,5 @@
 # Dynamic-Object-Remover
-to remove dynamic object in 3D pointcloud map
+remove dynamic object in 3D pointcloud map
 
 # Prerequisites
 data  
