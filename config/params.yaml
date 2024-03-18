@@ -1,6 +1,6 @@
 remover:
-  load_dir: "/home/evanovic/Save_PCD/KITTI/"
-  result_dir: "/home/evanovic/Save_PCD/remover"
+  load_dir: "/home/evanovic/data/Save_PCD/KITTI/"
+  result_dir: "/home/evanovic/data/Save_PCD/remover"
 
   is_large: false
 
@@ -12,7 +12,7 @@ remover:
   start_idx: 600
   end_idx: 900
 
-  downsample_voxel_size: 0.1
+  downsample_voxel_size: 0.05
 
   FOV_V: 50.0
   FOV_H: 120.0
