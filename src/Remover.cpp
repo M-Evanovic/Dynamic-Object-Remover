@@ -287,7 +287,7 @@ std::vector<int> Remover::getDynamicPointIndexInEachScan(cv::Mat rangeImg_local,
 }
 
 void Remover::detectDynamicPoint(void) {
-    cout << "Detecting dynamic point" << endl;
+    cout << "Detecting dynamic points" << endl;
     std::vector<int> dynamic_point_indices_temp;
     for (int index = 0; index < scans.size(); index++) {
         pcl::PointCloud<PointType>::Ptr scan_without_ground = scans_without_ground.at(index);
