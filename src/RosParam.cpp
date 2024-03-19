@@ -24,7 +24,10 @@ RosParam::RosParam()
     nh.param<float>("remover/FOV_H", FOV_H, 120.0);
     FOV = std::pair<float, float>(FOV_V, FOV_H);
 
-    nh.param<float>("remover/resize_ratio", resize_ratio, 1.0);
+    nh.param<float>("remover/remove_resize_ratio", remove_resize_ratio, 1.0);
+
+    nh.param<bool>("remover/need_revert", need_revert, false);
+    nh.param<float>("remover/revert_resize_ratio", revert_resize_ratio, 0.8);
     
     nh.param<float>("remover/range_difference_ratio_threshold", range_difference_ratio_threshold, 0.05);
 
