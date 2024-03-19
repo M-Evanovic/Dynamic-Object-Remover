@@ -17,7 +17,10 @@ remover:
   FOV_V: 50.0
   FOV_H: 120.0
 
-  resize_ratio: 1.2
+  remove_resize_ratio: 1
+
+  need_revert: false
+  revert_resize_ratio: 0.8
   
   range_difference_ratio_threshold: 0.05
 
