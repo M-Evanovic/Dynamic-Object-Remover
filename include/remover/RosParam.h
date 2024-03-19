@@ -35,7 +35,10 @@ public:
     float FOV_H;
     std::pair<float, float> FOV;
 
-    float resize_ratio;
+    float remove_resize_ratio;
+
+    bool need_revert;
+    float revert_resize_ratio;
     
     float range_difference_ratio_threshold;
 
