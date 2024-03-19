@@ -71,7 +71,7 @@
 #include <thread>
 #include <mutex>
 
-#include <filesystem> // requires gcc version >= 8
+#include <filesystem>
 
 namespace fs = std::filesystem;
 
@@ -95,5 +95,9 @@ SphericalPoint Cartesian2Spherical(PointType point);
 float radian2degree(float radian);
 
 float degree2radian(float degree);
+
+void seperateVector(std::vector<int> & vector_target, std::vector<int> vector_seperate);
+void seperateVector(std::vector<int> vector_src, std::vector<int> vector_seperate, std::vector<int> & vector_target);
+void seperateVector(int size, std::vector<int> vector_seperate, std::vector<int> & vector_target);
 
 #endif
