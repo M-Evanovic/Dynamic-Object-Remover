@@ -291,16 +291,14 @@ void Remover::detectDynamicPoint(void) {
     std::vector<int> dynamic_point_indices_temp;
     for (int index = 0; index < scans.size(); index++) {
         pcl::PointCloud<PointType>::Ptr scan_without_ground = scans_without_ground.at(index);
-        cv::Mat rangeImg_local = scan2range(scan_without_ground, resize_ratio);
+        cv::Mat rangeImg_local = scan2range(scan_without_ground, remove_resize_ratio);
         transformGlobalMap2Local(index);
-        std::pair<cv::Mat, cv::Mat> rangeImg = map2range(global_map_current, resize_ratio);
+        std::pair<cv::Mat, cv::Mat> rangeImg = map2range(global_map_current, remove_resize_ratio);
         cv::Mat rangeImg_global = rangeImg.first;
         cv::Mat rangeImg_index = rangeImg.second;
         cv::Mat rangeImg_different = cv::Mat(FOV_V, FOV_H, CV_32FC1, cv::Scalar::all(0.0));
         cv::absdiff(rangeImg_local, rangeImg_global, rangeImg_different);
-
         std::vector<int> dynamic_point_indexes_in_this_scan = getDynamicPointIndexInEachScan(rangeImg_local, rangeImg_different, rangeImg_index);
-
         dynamic_point_indices_temp.insert(dynamic_point_indices_temp.end(), dynamic_point_indexes_in_this_scan.begin(), dynamic_point_indexes_in_this_scan.end());
     }
     std::set<int> dynamic_point_indexes_set(dynamic_point_indices_temp.begin(), dynamic_point_indices_temp.end());
@@ -318,10 +316,55 @@ void Remover::detectDynamicPoint(void) {
     extrator.setIndices(_dynamic_point_indices);
     extrator.setNegative(false);
     extrator.filter(*global_map_dynamic);
-    
+
     std::string global_map_dynamic_file_name = result_dir + "/" + "Detected_Dynamic_Point.pcd";
     pcl::io::savePCDFileBinary(global_map_dynamic_file_name, *global_map_dynamic);
-    cout << "Finish to detect dynamic point" << endl;
+    cout << "Finish to detect dynamic points" << endl;
+}
+
+void Remover::transformDynamicMap2Local(int index) {
+    global_map_current->clear();
+    Eigen::Matrix4d pose_inverse = poses.at(index).inverse();
+    Eigen::Matrix4d transformation_IMU2Lidar = transformation_Lidar2IMU.inverse();
+    pcl::transformPointCloud(*global_map_dynamic, *global_map_current, pose_inverse);
+    pcl::transformPointCloud(*global_map_current, *global_map_current, transformation_IMU2Lidar);
+}
+
+void Remover::revertStaticPoint(void) {
+    cout << "Removerting static points" << endl;
+    std::vector<int> dynamic_point_indices_temp;
+    for (int index = 0; index < scans.size(); index++) {
+        pcl::PointCloud<PointType>::Ptr scan_without_ground = scans_without_ground.at(index);
+        cv::Mat rangeImg_local = scan2range(scan_without_ground, revert_resize_ratio);
+        transformDynamicMap2Local(index);
+        std::pair<cv::Mat, cv::Mat> rangeImg = map2range(global_map_current, revert_resize_ratio);
+        cv::Mat rangeImg_global = rangeImg.first;
+        cv::Mat rangeImg_index = rangeImg.second;
+        cv::Mat rangeImg_different = cv::Mat(FOV_V, FOV_H, CV_32FC1, cv::Scalar::all(0.0));
+        cv::absdiff(rangeImg_local, rangeImg_global, rangeImg_different);
+        std::vector<int> dynamic_point_indexes_in_this_scan = getDynamicPointIndexInEachScan(rangeImg_local, rangeImg_different, rangeImg_index);
+        dynamic_point_indices_temp.insert(dynamic_point_indices_temp.end(), dynamic_point_indexes_in_this_scan.begin(), dynamic_point_indexes_in_this_scan.end());
+    }
+    std::set<int> dynamic_point_indexes_set(dynamic_point_indices_temp.begin(), dynamic_point_indices_temp.end());
+    dynamic_point_indices.clear();
+    for (auto index : dynamic_point_indexes_set) {
+        dynamic_point_indices.emplace_back(index);
+    }
+    if (dynamic_point_indices.empty()) {
+        cout << "no dynamic point" << endl;
+        return;
+    }
+
+    pcl::ExtractIndices<PointType> extrator;
+    boost::shared_ptr<std::vector<int>> _dynamic_point_indices = boost::make_shared<std::vector<int>>(dynamic_point_indices);
+    extrator.setInputCloud(global_map_dynamic);
+    extrator.setIndices(_dynamic_point_indices);
+    extrator.setNegative(false);
+    extrator.filter(*global_map_dynamic);
+
+    std::string global_map_dynamic_file_name = result_dir + "/" + "Detected_Dynamic_Point_After_Revert.pcd";
+    pcl::io::savePCDFileBinary(global_map_dynamic_file_name, *global_map_dynamic);
+    cout << "Finish to revert static points" << endl;
 }
 
 void Remover::removePointUnderHeight(void) {
@@ -439,15 +482,8 @@ void Remover::removePointUnderHeight(void) {
 
 void Remover::separateStaticPointIndexFromGlobalIndex(void) {
     static_point_indices.clear();
-    int index_seperate_ptr = 0;
-    for (int index = 0; index < global_map_without_ground->points.size(); index++) {
-        if (index != dynamic_point_indices[index_seperate_ptr]) {
-            static_point_indices.emplace_back(index);
-        }
-        else {
-            index_seperate_ptr++;
-        }
-    }
+    int size = global_map_without_ground->points.size();
+    seperateVector(size, dynamic_point_indices, static_point_indices);
 }
 
 void Remover::extractStaticMap(void) {
@@ -476,6 +512,9 @@ void Remover::run(void) {
     loadScans(scans_dir);
     generateGlobalMap();
     detectDynamicPoint();
+    if (need_revert) {
+        revertStaticPoint();
+    }
     removePointUnderHeight();
     extractStaticMap();
     cout << "总耗时:";
