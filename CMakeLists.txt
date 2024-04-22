@@ -49,15 +49,15 @@ link_directories(
   ${OpenCV_LIBRARY_DIRS}
 )
 
-add_executable( ${PROJECT_NAME}_remover src/main.cpp
+add_executable( ${PROJECT_NAME} src/main.cpp
   src/utility.cpp 
   src/RosParam.cpp
   src/Remover.cpp
 )
 
-add_dependencies(${PROJECT_NAME}_remover ${catkin_EXPORTED_TARGETS})
-target_compile_options(${PROJECT_NAME}_remover PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_libraries(${PROJECT_NAME}_remover 
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
+target_compile_options(${PROJECT_NAME} PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(${PROJECT_NAME} 
   ${catkin_LIBRARIES} 
   ${PCL_LIBRARIES} 
   ${OpenCV_LIBRARIES}
