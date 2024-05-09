@@ -69,19 +69,3 @@ $ roslaunch remover remove.launch
 ## License
  <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is supported by Naver Labs Corporation and by the National Research Foundation of Korea (NRF). This work is also licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
 
-## TODO (in order)
-#### Near future 
-- Full sequence cleaned-scan saver by automatically iterating batches (because using 50-100 scans for a single batch is recommended for computation speed)
-- Adding revert steps (I think certainly removing dynamic points is generally more worthy for many applications, so reverting step is omitted currently)
-- Automatically parse dynamic segments from the dynamic points in a scan (e.g., using DBSCAN on dynamic points in a scan)
-- [x] Exmaples from MulRan dataset (for showing removert's availability for various LiDAR configurations) — see this [tutorial](https://youtu.be/UiYYrPMcIRU) 
-- [x] (scan, pose) pair saver using SC-LeGO-LOAM or [SC-LIO-SAM](https://github.com/gisbi-kim/SC-LIO-SAM#applications), which includes a loop closing that can make a globally consistent map. — see this [tutorial](https://youtu.be/UiYYrPMcIRU)
-- Examples from the arbitrary datasets using the above input data pair saver.
-- Providing a SemanticKITTI (as a truth) evaluation tool (i.e., calculating the number of points of TP, FP, TN, and FN) 
-- (Not certain now) Changing all floats to double
-
-#### Future 
-- Real-time LiDAR SLAM integration for better odometry robust to dynamic objects in urban sites (e.g., with LIO-SAM in the Riverside sequences of MulRan dataset)
-- Multi-session (i.e., inter-session) change detection example
-- Defining and measuring the quality of a static map
-- Using the above measure, deciding when removing can be stopped with which resolution (generally 1-3 removings are empirically enough but for highly crowded environments such as urban roads) 
